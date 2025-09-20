@@ -1,0 +1,68 @@
+#include <iostream>
+#include <string>
+#include <stdexcept>
+
+int stringToInt(const std::string& str)
+{
+    const int INT_MAX_VAL = 2147483647;
+    const int INT_MIN_VAL = -2147483646;
+
+    long long result = 0;
+    int sign = 1;
+    size_t i = 0;
+
+    if (str[i] == '+' || str[i] == '-')
+    {
+        if (str[i] == '-')
+        {
+            sign = -1;
+        }
+        i++;
+    }
+
+    if (i >= str.size())
+    {
+        throw std::invalid_argument("Invalid input: no digits found.");
+    }
+
+    for (; i < str.size(); i++)
+    {
+        if (str[i] < '0' || str[i] > '9')
+        {
+            throw std::invalid_argument("Invalid input: contains non-digit characters.");
+        }
+
+        result = result * 10 + (str[i] - '0');
+
+        long long temp = result * sign;
+        if (temp > INT_MAX_VAL || temp < INT_MIN_VAL)
+        {
+            throw std::out_of_range("Integer value out of range.");
+        }
+    }
+
+    return static_cast<int>(result * sign);
+}
+
+int main()
+{
+    try
+    {
+        std::string input;
+        std::cout << "Enter an integer number as string: ";
+        std::cin >> input;
+
+        int value = stringToInt(input);
+        std::cout << "Converted value: " << value << std::endl;
+    }
+    catch (const std::invalid_argument& e)
+    {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
